@@ -1,0 +1,24 @@
+create table if not exists Genres (
+	Id serial primary key,
+	Title varchar(30) not null unique
+);
+
+create table if not exists Performers (
+	Id serial primary key,
+	Name varchar(50) not null,
+	GenresId integer references Genres(Id)
+);
+
+create table if not exists Albums (
+	Id serial primary key,
+	Title varchar(50) not null,
+	ReleaseYear integer not null check(ReleaseYear > 0 and ReleaseYear < 2100),
+	PerformersId integer references Performers(Id)
+);
+
+create table if not exists Tracks (
+	Id serial primary key,
+	Title varchar(50) not null,
+	Duration time without time zone not null,
+	AlbumsId integer references Albums(Id)
+);

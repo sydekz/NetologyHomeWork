@@ -1,0 +1,16 @@
+create table if not exists Workers (
+	Id serial primary key,
+	Name varchar(70) not null
+);
+
+create table if not exists Departments (
+	Id serial primary key,
+	Title varchar(30) not null unique,
+	Boss integer references Workers(Id)
+);
+
+create table if not exists WorkersDepartments (
+	WorkersId integer references Workers(Id),
+	DepartmentsId integer references Departments(Id),
+	constraint wd primary key (WorkersId, DepartmentsId)
+);

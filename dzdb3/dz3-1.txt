@@ -1,0 +1,46 @@
+create table if not exists Genres (
+	Id serial primary key,
+	Title varchar(30) not null unique
+);
+
+create table if not exists Performers (
+	Id serial primary key,
+	Name varchar(50) not null
+);
+
+create table if not exists Albums (
+	Id serial primary key,
+	Title varchar(50) not null,
+	ReleaseYear integer not null check(ReleaseYear > 0 and ReleaseYear < 2100)
+);
+
+create table if not exists Tracks (
+	Id serial primary key,
+	Title varchar(50) not null,
+	Duration time without time zone not null,
+	AlbumsId integer references Albums(Id)
+);
+
+create table if not exists Collections (
+	Id serial primary key,
+	Title varchar(50) not null,
+	ReleaseYear integer not null check(ReleaseYear > 0 and ReleaseYear < 2100)
+);
+
+create table if not exists GenresPerformers (
+	GenresId integer references Genres(Id),
+	PerformersId integer references Performers(Id),
+	constraint gp primary key(GenresId, PerformersId)
+);
+
+create table if not exists PerformersAlbums (
+	PerformersId integer references Performers(Id),
+	AlbumsID integer references Albums(Id),
+	constraint pa primary key (PerformersId, AlbumsID)
+);
+
+create table if not exists TracksCollections (
+	TraksId integer references Tracks(Id),
+	CollectionsId integer references Collections(Id),
+	constraint tc primary key (TraksId, CollectionsId)
+);
