@@ -1,0 +1,115 @@
+Схема Таблицы для удобства - http://joxi.ru/LmGjg9VswO8XBr  
+После 9 пункта привел названия таблиц и их параметры для удобства.
+
+1. количество исполнителей в каждом жанре;
+SELECT name, COUNT(performersid) from genres g
+JOIN genresperformers gp ON g.id = gp.genresid
+GROUP BY g.name
+ORDER BY COUNT(performersid) DESC
+
+2. количество треков, вошедших в альбомы 2019-2020 годов;
+SELECT COUNT(tracks.title) FROM tracks
+JOIN albums ON tracks.albumsid = albums.id
+WHERE  albums.releaseyear = 2019 OR albums.releaseyear = 2020
+
+3.средняя продолжительность треков по каждому альбому;
+SELECT albums.title, AVG(tracks.duration) FROM tracks
+JOIN albums ON tracks.albumsid = albums.id
+GROUP BY albums.title
+ORDER BY AVG(tracks.duration) DESC
+
+4.Все исполнители, которые не выпустили альбомы в 2020 году;
+SELECT DISTINCT name from performers p
+JOIN performersalbums pa on p.id = pa.performersid
+JOIN albums a ON pa.albumsid = a.id
+WHERE releaseyear != 2020
+
+5. Названия сборников, в которых присутствует конкретный исполнитель '25/17';
+SELECT DISTINCT c.title FROM collections c
+JOIN trackscollections tc ON c.id = tc.collectionsid
+JOIN tracks t ON tc.traksid = t.id
+JOIN albums a ON t.albumsid = a.id
+JOIN performersalbums pa ON a.id = pa.albumsid
+JOIN performers p ON pa.performersid = p.id
+WHERE p.name LIKE '25/17'
+
+6. Название альбомов, в которых присутствуют исполнители более 1 жанра; 
+SELECT DISTINCT a.title FROM albums a
+JOIN performersalbums pa ON a.id = pa.albumsid
+JOIN performers p ON pa.performersid = p.id
+WHERE p.name IN (
+	SELECT p.name FROM performers p
+	JOIN genresperformers gp ON p.id = gp.performersid
+	JOIN genres g ON gp.genresid = g.id
+	GROUP BY p.name
+	HAVING COUNT(g.name) >= 2
+);
+
+7. Наименование треков, которые не входят в сборники;
+SELECT title FROM tracks t
+LEFT JOIN trackscollections tc ON t.id = tc.traksid
+WHERE traksid IS NULL
+
+8. исполнителя(-ей), написавшего самый короткий по продолжительности трек (теоретически таких треков может быть несколько);
+SELECT DISTINCT name FROM performers p
+JOIN performersalbums pa ON p.id = pa.performersid
+JOIN albums a ON pa.albumsid = a.id
+JOIN tracks t ON a.id = t.albumsid
+WHERE t.title IN (
+	SELECT title FROM tracks
+	WHERE duration = (
+		SELECT MIN(duration) FROM tracks
+	)
+);
+
+9. название альбомов, содержащих наименьшее количество треков.
+!!!Не нашел красивый вариант, и сделал, наверное слишком топорно!!!
+SELECT albums.title FROM albums
+JOIN tracks ON albums.id = tracks.albumsid
+GROUP BY albums.title
+HAVING COUNT(tracks.title) = (
+	SELECT COUNT(tracks.title) FROM albums
+	JOIN tracks ON albums.id = tracks.albumsid
+	GROUP BY albums.title
+	ORDER BY COUNT(tracks.title)
+	LIMIT 1 
+)
+
+
+Сollections
+id 
+title
+releaseyear
+
+TracksCollections
+traksid
+collectionsid
+
+PerformersAlbums
+performersid
+albumsid
+
+Performers
+id
+name
+
+Albums
+id
+title
+releaseyear
+
+Tracks
+id
+title
+duration	
+albumsid
+
+Genres
+id 
+name
+
+GenresPerformers
+genresid
+performersid
+
+
