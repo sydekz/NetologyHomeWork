@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Телефон {{ phone.name }} купить недорого в Москве{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="header">
+            <h1>Телефон {{ phone.name }}</h1>
+        </div>
+        <div class="content">
+            <p>Стоимость: {{ phone.price }}</p>
+            <p>Дата выхода: {{ phone.release_date }}</p>
+            <p>LTE: {% if phone.lte_exists %}Есть{% else %} Нет {% endif %}</p>
+
+            <img src="{{ phone.image }}" />
+
+        </div>
+    </div>
+{% endblock %}
