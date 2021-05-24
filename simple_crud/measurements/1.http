@@ -1,0 +1,67 @@
+PATCH http://127.0.0.1:8000/api/v1/project/1/
+Content-Type: application/json
+
+{
+"name": "Кремль Москвы"
+}
+
+###
+
+PUT http://127.0.0.1:8000/api/v1/measurement/2/
+Content-Type: application/json
+
+{
+  "value":21.9,
+  "project":2
+}
+
+###
+
+POST http://127.0.0.1:8000/api/v1/project/
+Content-Type: application/json
+
+{
+  "name":"Московский кремль",
+  "latitude":55.7520233,
+  "longitude":37.6174994
+}
+###
+
+POST http://127.0.0.1:8000/api/v1/project/
+Content-Type: application/json
+
+{
+  "name":"Московский зоопарк",
+  "latitude":55.7609367,
+  "longitude":37.5787849
+}
+###
+
+POST http://127.0.0.1:8000/api/v1/measurement/
+Content-Type: application/json
+
+{
+  "value":21.12,
+  "project":1
+}
+
+###
+
+POST http://127.0.0.1:8000/api/v1/measurement/
+Content-Type: application/json
+
+{
+  "value":22.3,
+  "project":2
+}
+
+###
+GET http://127.0.0.1:8000/api/v1/measurement/
+Accept: application/json
+
+###
+GET http://127.0.0.1:8000/api/v1/project/
+Accept: application/json
+
+###
+
